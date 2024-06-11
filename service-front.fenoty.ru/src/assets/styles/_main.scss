@@ -1,0 +1,61 @@
+@import '_base.scss';
+
+
+
+
+#app{
+  height: auto;
+  max-width: 375px;
+  margin: 0 auto;
+  padding: 12px 12px 0px 12px;
+  font-weight: normal;
+  
+}
+main{
+  height: 100%;
+  padding-bottom: 70px;
+}
+header{
+  z-index: 9;
+  width: 100%;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  padding-bottom: 6px;
+  &::before{
+    z-index: -1;
+    content: '';
+    display: block;
+    position: absolute;
+    background: $black;
+    height: 100%;
+    width: 100%;
+    top: 15px;
+  }
+}
+
+.container{
+  height: auto;
+  max-width: 375px;
+  margin: 0 auto;
+  padding: 0 12px;
+  font-weight: normal;
+  
+}
+
+.title{
+  text-align: center;
+  color: $yellow;
+  font-family: $font-primary;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.section-title{
+  text-align: left;
+  color: $white;
+  font-family: $font-primary;
+  font-size: 18px;
+  font-weight: 400;
+}
+
