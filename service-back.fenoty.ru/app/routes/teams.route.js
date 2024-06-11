@@ -1,6 +1,6 @@
 import { getTest, getTeams } from "../controllers/teams.controller.js"
 
-export default function Test(app) {
+export default function Teams(app) {
   app.use(function (req, res, next) {
     res.header(
       "Access-Control-Allow-Headers",

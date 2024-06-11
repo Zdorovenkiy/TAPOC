@@ -1,6 +1,6 @@
 import { getUserTeam, changeUserTeam, setUser, getUser  } from "../controllers/users.controller.js"
 
-export default function Test(app) {
+export default function Users(app) {
   app.use(function (req, res, next) {
     res.header(
       "Access-Control-Allow-Headers",

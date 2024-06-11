@@ -3,6 +3,7 @@ import Team from "../models/teams.model.js"
 import User from "../models/users.model.js"
 import Level from "../models/levels.model.js"
 import Lobby from "../models/lobby.model.js"
+import RefreshToken from './refreshToken.model.js'
 
 import Sequelize from "sequelize";
 
@@ -43,7 +44,7 @@ db.team = Team(sequelize, Sequelize)
 db.user = User(sequelize, Sequelize)
 db.level = Level(sequelize, Sequelize)
 db.lobby = Lobby(sequelize, Sequelize)
-
+db.refreshToken = RefreshToken(sequelize, Sequelize)
 
 
 db.user.hasOne(db.team, {
@@ -60,6 +61,14 @@ db.user.hasOne(db.level, {
 
 db.level.belongsTo(db.user, {
   foreignKey: 'id', targetKey: 'level_id'
+});
+
+db.refreshToken.belongsTo(db.user, {
+  foreignKey: 'userId', targetKey: 'id'
+});
+
+db.user.hasOne(db.refreshToken, {
+  foreignKey: 'userId', targetKey: 'id'
 });
 
 // db.user.hasOne(db.lobby, {
