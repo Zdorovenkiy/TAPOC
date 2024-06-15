@@ -3,7 +3,7 @@ import Team from "../models/teams.model.js"
 import User from "../models/users.model.js"
 import Level from "../models/levels.model.js"
 import Lobby from "../models/lobby.model.js"
-import RefreshToken from './refreshToken.model.js'
+import RefreshToken from '../models/refreshToken.model.js'
 
 import Sequelize from "sequelize";
 
