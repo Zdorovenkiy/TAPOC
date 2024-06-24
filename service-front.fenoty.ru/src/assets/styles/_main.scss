@@ -2,21 +2,24 @@
 
 
 
+body{
+  position: relative;
+}
 
 #app{
-  height: auto;
+  height: 100%;
   max-width: 375px;
   margin: 0 auto;
-  padding: 12px 12px 0px 12px;
+  padding: 24px 12px 0px 12px;
   font-weight: normal;
-  
+  overflow-y: scroll;
 }
 main{
-  height: 100%;
+  height: auto;
   padding-bottom: 70px;
 }
 header{
-  z-index: 9;
+  z-index: 999;
   width: 100%;
   position: fixed;
   left: 0;
@@ -43,6 +46,7 @@ header{
   
 }
 
+
 .title{
   text-align: center;
   color: $yellow;
@@ -50,12 +54,23 @@ header{
   font-size: 24px;
   font-weight: 500;
 }
+.side-title{
+  text-align: left;
+  color: $yellow;
+  font-family: $font-primary;
+  font-size: 16px;
+  font-weight: 600;
+}
 
 .section-title{
   text-align: left;
   color: $white;
   font-family: $font-primary;
   font-size: 18px;
-  font-weight: 400;
+  font-weight: 500;
 }
+
+
+
+
 

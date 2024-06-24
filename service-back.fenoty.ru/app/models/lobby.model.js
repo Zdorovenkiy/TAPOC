@@ -1,15 +1,15 @@
 export default  (sequelize, Sequelize) => {
-    const Lobby = sequelize.define("lobby", {
+    const Lobby = sequelize.define("lobbies", {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true
       },
-      first_name: {
-        type: Sequelize.INTEGER
+      first_user: {
+        type: Sequelize.BIGINT
       },
-      second_name: {
-        type: Sequelize.INTEGER
+      second_user: {
+        type: Sequelize.BIGINT
       },
       first_score: {
         type: Sequelize.INTEGER
@@ -18,8 +18,16 @@ export default  (sequelize, Sequelize) => {
         type: Sequelize.INTEGER
       },
       winner_id: {
-        type: Sequelize.INTEGER
+        type: Sequelize.BIGINT
       },
+      reward_accepted: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: 0
+      },
+      second_reward_accepted: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: 0
+      }
     });
   
     return Lobby;

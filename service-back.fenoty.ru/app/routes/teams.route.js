@@ -1,4 +1,5 @@
-import { getTest, getTeams } from "../controllers/teams.controller.js"
+import {  getTeams } from "../controllers/teams.controller.js"
+import { getTest } from "../controllers/lobby.controller.js"
 
 export default function Teams(app) {
   app.use(function (req, res, next) {
@@ -9,7 +10,7 @@ export default function Teams(app) {
     next();
   });
 
-  app.get("/test", getTest);
-  app.get("/getTeams", getTeams)
+  app.post("/api/v1/getTest", getTest);
+  app.get("/api/v1/getTeams", getTeams)
 
 }

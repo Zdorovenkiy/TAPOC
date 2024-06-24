@@ -1,15 +1,19 @@
 <template>
     <div class="balance">
-        <span>{{score}}</span>
-        <img :src="tapac" alt="Tapac coin">
+        <TapacCoin/>
+        <span ref="incrementAnimation">{{score}}</span>
     </div>
 </template>
 
 <script lang="ts">
-import Tapac from '@images/icons/tapac.svg'
+import TapacCoin from '@components/icons/iconTapac.vue'
+import {incrementAnimation} from '@gsap/animation'
 
 export default {
     name: "UserBalance",
+    components: {
+        TapacCoin,
+    },
     props: {
         score: {
             type: Number,
@@ -18,8 +22,16 @@ export default {
     },
     data() {
         return {
-            tapac: Tapac as string,
+            prevScore: 0,
         };
+    },
+    watch: {
+        score(currNumber){
+            this.prevScore = incrementAnimation(this.$refs.incrementAnimation, currNumber, this.prevScore, 1.5)
+        }
+    },
+    mounted() {
+        
     },
 };
 </script>
@@ -37,8 +49,9 @@ export default {
         font-family: $font-primary;
         font-size: 44px;
         font-weight: 700;
+        text-align: left;
     }
-    img{
+    svg{
         max-width:  33px;
         max-height: 33px;
         min-width:  33px;

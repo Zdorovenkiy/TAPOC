@@ -1,42 +1,118 @@
 <template>
     <div class="week-container">
-        <h6 class="section-title">Как прошла неделя</h6>
+        <h6 class="section-title">{{ $t('week.title') }}</h6>
         <div class="week">
             <div class="week-item">
-                <span>Всего игр</span>
-                <p>{{games}}</p>
+                <span>{{ $t('week.totalGames') }}</span>
+                <p ref="gamesIncrement">{{rating.games}}</p>
             </div>
             <div class="week-item">
-                <span>Победы</span>
-                <p>{{wins}}</p>
+                <span>{{ $t('week.totalWins') }}</span>
+                <p ref="winsIncrement">{{rating.wins}}</p>
             </div>
             <div class="week-item">
-                <span>Поражения</span>
-                <p>{{defeat}}</p>
+                <span>{{ $t('week.totalDefeat') }}</span>
+                <p ref="defeatIncrement">{{rating.defeat}}</p>
             </div>
         </div>
     </div>
 </template>
 
 <script lang="ts">
+import {incrementAnimation} from '@gsap/animation'
+
 import { userStore } from "@stores/user";
-import { mapState } from "pinia";
+import { mapActions, mapState } from "pinia";
+import { socket } from "@stores/wss"
 
 export default {
     name: "UserWeek",
-    props: {
-        games: {
-            type: Number,
-            required: true,
+    async created(){
+        const userStorage = userStore();
+        await window.console.log('userWeekUser: ', userStorage.user);
+        
+
+
+        
+        // await socket.emit('rating', 
+        //     {type: "getUserRating", data: {id: userStorage.user.tg_id, teamId: userStorage.user.team_id}}, 
+        //     (response: any) => {
+        //         // console.log(response);
+                
+        //         this.setUserRating(response.data.rating.total, response.data.rating.victories, response.data.rating.loses, response.data.place, response.data.rating.scores)
+        //     }
+        // );
+
+        // await console.log('getUserRating: ', userStorage.rating);
+
+    },
+    setup() {
+
+    },
+    data() {
+        return {
+            prevGames: 0,
+            prevWins: 0,
+            prevDefeat: 0,
+
+            games: 0 as number,
+            wins: 0 as number,
+            defeat: 0 as number,
+        }
+    },
+    computed: {
+        ...mapState(userStore, [
+            "user",
+            "rating"
+        ])
+    },
+    watch: {
+        games(currNumber){
+            this.prevGames = incrementAnimation(this.$refs.gamesIncrement, currNumber, this.prevGames, 1)
         },
-        wins: {
-            type: Number,
-            required: true,
+        wins(currNumber){
+            this.prevWins = incrementAnimation(this.$refs.winsIncrement, currNumber, this.prevWins, 1)
         },
-        defeat: {
-            type: Number,
-            required: true,
+        defeat(currNumber){
+            this.prevDefeat = incrementAnimation(this.$refs.defeatIncrement, currNumber, this.prevDefeat, 1)
         },
+    },
+    methods: {
+        ...mapActions(userStore, [
+            'setUserRating',
+        ]),
+    },
+    updated() {
+        this.$nextTick(function () {
+            setTimeout(() => {
+                socket.emit('rating', 
+                    {type: "getUserRating", data: {id: this.user.tg_id, teamId: this.user.team_id}}, 
+                    (response: any) => {
+                        // console.log(response);
+                        
+                        this.setUserRating(response.data.rating.total, response.data.rating.victories, response.data.rating.loses, response.data.place, response.data.rating.scores)
+                    }
+                );
+            }, 500);
+        })
+    },
+    async mounted() {
+
+
+
+        this.$nextTick(function () {
+            
+            setTimeout(() => {
+                socket.emit('rating', 
+                    {type: "getUserRating", data: {id: this.user.tg_id, teamId: this.user.team_id}}, 
+                    (response: any) => {
+                        // console.log(response);
+                        
+                        this.setUserRating(response.data.rating.total, response.data.rating.victories, response.data.rating.loses, response.data.place, response.data.rating.scores)
+                    }
+                );
+            }, 500);
+        })
     },
 };
 </script>

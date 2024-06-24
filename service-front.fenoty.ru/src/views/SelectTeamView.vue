@@ -1,6 +1,7 @@
 <template>
+<div>
     <div class="first-select">
-        <h1 class="title">Выберите команду</h1>
+        <h1 class="title">{{ $t('selectTeam.title') }}</h1>
 
         <div class="team">
             <div class="team-image">
@@ -60,7 +61,7 @@
             </div>
 
             <div class="team-name">
-                <h2>Ваша команда</h2>
+                <h2>{{ $t('selectTeam.yourTeam') }}</h2>
 
                 <swiper
                     class="name-swiper"
@@ -85,12 +86,15 @@
             </div>
         </div>
         
-        <DefaultButton @click="setUser(telegramUser, currentTeam.id)" class="btn default">Продолжить</DefaultButton>
+        <DefaultButton @click.stop="userHandler(telegramUser, currentTeam.id)" class="btn default">{{ $t('welcome.buttons.start') }}</DefaultButton>
     </div>
+</div>
 </template>
 
 
 <script lang="ts">
+
+
 import { ref } from "vue";
 import axios from "axios";
 
@@ -109,8 +113,13 @@ import DefaultButton from "@components/buttons/Default.vue";
 import type {Teams} from '#types/default'
 
 
+import { authStore } from "@stores/auth";
+import router from "@/router";
+
+import { loaderStore } from '@stores/loader'
+
 export default {
-    name: "SelectTeam",
+    name: "FirstSelectTeam",
     components: {
         Swiper,
         SwiperSlide,
@@ -123,8 +132,11 @@ export default {
     },
     setup() {    
         const teamStorage = teamsStore();
+        teamStorage.teams = [];
         teamStorage.fetchTeams();
-        const teams = teamStorage.teams;
+
+
+        const teams = teamStorage?.teams;
         const slidesCount = teams.length;
 
         const swiperMain = ref<SwiperClass>();
@@ -147,7 +159,7 @@ export default {
             swiperName.value?.slideNext();
         };
         const onSlidePrev = () => {
-            swiperThumbs.value?.slidePrev();
+            swiperThumbs.value?.slidePrev(); 
             swiperName.value?.slidePrev();
         };
 
@@ -184,6 +196,9 @@ export default {
         ...mapState(telegramUserStore, [
             'telegramUser',
         ]),  
+        ...mapState(authStore, [
+            'isLoggedIn'
+        ]),
         
     },
     methods: {
@@ -191,12 +206,47 @@ export default {
             this.currentTeam = this.teams[swiper.realIndex];
         },
         ...mapActions(userStore, [
-            'setUser',
+            'addUser',
+            'getUserData',
+            'getLevelLimit',
+            'getUserTeam',
         ]),
+        ...mapActions(authStore, [
+            'checkAuthReturn',
+            'checkUserAuth',
+        ]),
+        ...mapActions(loaderStore, [
+            'startLoader',
+        ]),
+        async userHandler(telegramUser: any, team_id: number){
+            await this.addUser(telegramUser, team_id)
+
+            await this.$nextTick();
+
+
+            await this.getUserData(telegramUser.id);
+
+            await this.$nextTick();
+
+            await this.getLevelLimit(telegramUser.id);
+
+            await this.$nextTick();
+
+            await this.getUserTeam(telegramUser.id);
+
+           
+
+            await this.checkUserAuth(telegramUser.id)
+
+            this.startLoader()
+            router.push('/');
+            
+        }
     },
     mounted() {
-        // console.log(this.telegramUser);
-        // this.setUser(this.telegramUser, this.currentTeam.id)
+        if (this.isLoggedIn) {
+            router.push('/');
+        }
     },
 };
 </script>
@@ -205,7 +255,6 @@ export default {
 
 <style lang="scss">
 .first-select {
-    margin-top: 20px;
     .title {
         margin-bottom: 16px;
     }
@@ -289,16 +338,21 @@ export default {
                 }
                 .swiper {
                     max-width: 220px;
+                    min-width: 220px;
                     border-radius: 20px;
                     position: relative;
                     &-slide {
                         border-radius: 20px;
                         overflow: hidden;
                         max-width: inherit;
+                        min-width: inherit;
                         max-height: 220px;
+                        min-height: 220px;
                         img {
                             max-width: inherit;
                             max-height: inherit;
+                            min-width: inherit;
+                            min-height: inherit;
                             width: 100%;
                         }
                     }

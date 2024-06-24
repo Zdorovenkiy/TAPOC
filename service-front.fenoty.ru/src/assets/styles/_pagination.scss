@@ -1,0 +1,106 @@
+@import '_variables.scss';
+
+.vueginate-container,
+.vueginate-container * {
+    box-sizing: border-box
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0
+}
+
+.vg-center {
+    justify-content: center
+}
+
+.vg-left {
+    justify-content: flex-start
+}
+
+.vg-right {
+    justify-content: flex-end
+}
+
+.vueginate-container {
+    list-style-type: none;
+    display: flex;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    gap: 6px;
+    li{
+        &:first-child{
+            margin-right: 8px;
+            flex-grow: 1;
+        }
+        &:last-child{
+            display: flex;
+            justify-content: flex-end;
+            margin-left: 8px;
+            flex-grow: 1;
+        }
+    }
+    .vg-item {
+        text-decoration-line: none;
+        text-decoration-color: none;
+        display: block;
+        height: 32px;
+        width: 32px;
+        border-radius: 5px;
+        text-align: center;
+        line-height: 34px;
+    
+        background: $gray-dark;
+        color: $yellow;
+
+        font-family: $font-primary;
+        font-size: 10px;
+        font-weight: 700;
+    }
+    .vg-page{
+        &:active {
+            background: $yellow;
+            color: $gray-dark;
+        }
+    }
+    .vg-active {
+        background: $yellow;
+        color: $gray-dark;
+    }
+    .vg-arrow {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: .5rem
+    }
+    .vg-arrow{
+        color: $gray;
+        &:not(.vg-disabled){
+            &:active {
+                background: $yellow;
+                color: $gray-dark;
+            }  
+        }
+        &.vg-disabled{
+            background: $gray-light;
+            color: $gray;
+        }
+    }
+    .vg-disabled {
+        background: $gray-dark;
+        color: $yellow;
+
+        font-family: $font-primary;
+        font-size: 10px;
+        font-weight: 700;
+    }
+}
+

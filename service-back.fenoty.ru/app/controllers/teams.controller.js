@@ -1,12 +1,23 @@
 import db from "../utils/db.js";
 
 export function getTest(req, res) {
-    try {
-        res.status(200).send("WorkTest");
-    }
-    catch {
-      res.status(500).send({ message: 'Not work' });
-    };
+//   const user = db.user;
+//   const level = db.level;
+//   console.log(data);
+//   console.log(data.winnerId);
+//   if (!data.winnerId) {
+//       console.log(data.winnerId);
+//       user.findAll({
+//           where: {
+//               [Op.or]: [{
+//                   tg_id: data.firstPlayer,
+//                   tg_id: data.secondPlayer,
+//               }],                
+//           },
+//       }).then(players => {
+//           console.log(players);
+//       })
+//   } 
   }
 
 export function getTeams(req, res) {

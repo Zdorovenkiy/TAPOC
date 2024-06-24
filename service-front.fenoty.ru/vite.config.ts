@@ -30,6 +30,9 @@ export default ({ mode }: any) => {
         '@icons': fileURLToPath(new URL('./src/assets/images/icons', import.meta.url)),
         '@components': fileURLToPath(new URL('./src/components', import.meta.url)),
         '@stores': fileURLToPath(new URL('./src/stores', import.meta.url)),
+        '@gsap': fileURLToPath(new URL('./src/gsap', import.meta.url)),
+        '@notyf': fileURLToPath(new URL('./src/notification', import.meta.url)),
+        '@views': fileURLToPath(new URL('./src/views', import.meta.url)),
         '#types': fileURLToPath(new URL('./src/types', import.meta.url)),
       },
       extensions: ['*', '.vue', '.ts']
@@ -58,11 +61,22 @@ export default ({ mode }: any) => {
       port: 5173,
       strictPort: true,
       hmr: {
-          port: 5173,
-          // host: "localhost",
-          // protocol: "ws",
+          // port: 5173,
+          host: "localhost",
+          protocol: "ws",
+          
       },
+      // proxy: {
+			// 	"/api": {
+			// 		target: env.VITE_API_URL,
+			// 		changeOrigin: true,
+			// 		secure: false,
+			// 		rewrite: (p) => p.replace(/^\/api/, ""),
+			// 	},
+			// },
+			// cors: false,
     },
+    
   });
 }
 

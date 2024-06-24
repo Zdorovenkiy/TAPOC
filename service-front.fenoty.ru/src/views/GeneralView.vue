@@ -1,29 +1,34 @@
 <template>
-    <WelcomePage v-if="welcome" />
-
-    <section v-else class="general">
+    <section class="general">
         <div class="user">
             <div class="user-avatar">
                 <img
-                    src="/src/assets/images/teams/small/Bear.jpg"
-                    alt="Avatar"
+                    :src="team.imageSmall"
+                    :alt="team.name"
                 />
             </div>
             <div class="user-info">
                 <div class="user-info-top">
-                    <span>Уровень {{user.stats.level}}</span>
-                    <RouterLink to="/arena" />
+                    <span>{{ $t('user.level') }} {{user.level_id}}</span>
+                    <RouterLink to="/switch-team" />
                 </div>
-                <Scale :score="user.stats.score" :level="user.stats.levelScore" />
+                <Scale :score="user.balance" :level="user.levelLimit" />
             </div>
         </div>
-        <Balance :score="user.stats.score" />
+        <Balance :score="user.balance" />
         <div class="buttons">
-            <DefaultButton link="/" class="btn start_earn small">Начать зарабатывать</DefaultButton>
-            <DefaultButton link="/" class="btn level_up small" :class="user.stats.score < user.stats.levelScore ? 'disabled' : 'active'">Повысить уровень</DefaultButton>
+            <DefaultButton link="/arena" class="btn start_earn small">{{ $t('buttons.start_earn') }}</DefaultButton>
+            <DefaultButton v-if="user.balance >= user.levelLimit" link="/level-up" class="btn level_up small active">{{ $t('buttons.level_up') }}</DefaultButton>
+            <DefaultButton v-if="user.balance < user.levelLimit" link="/level-up" class="btn level_up small disabled">{{ $t('buttons.level_up') }}</DefaultButton>
         </div>
 
-        <WeekStats :games="user.week.games" :wins="user.week.wins" :defeat="user.week.defeat" />
+        <WeekStats/>
+
+        <UserRating/>
+
+
+        <RatingView/>
+
 
 
     </section>
@@ -31,64 +36,101 @@
 
 <script lang="ts">
 import { mapState, mapActions, storeToRefs } from "pinia";
-import WelcomePage from "@components/WelcomePage.vue";
 import Scale from "@components/user/Scale.vue";
 import Balance from "@components/user/Balance.vue";
 import DefaultButton from "@components/buttons/Default.vue";
 import WeekStats from "@components/user/WeekStats.vue";
+import UserRating from "@components/rating/Rating.vue";
+import RatingView from "@views/RatingView.vue";
 
-import { userStore } from "@stores/user";
-import { ref } from "vue";
+
+import { telegramUserStore, userStore } from "@stores/user";
+import { loaderStore } from '@stores/loader';
+
+import router from "@/router";
+import { authStore } from "@stores/auth";
 
 export default {
     name: "General",
     components: {
-        WelcomePage,
         Scale,
         Balance,
         DefaultButton,
         WeekStats,
+        UserRating,
+        RatingView
     },
     setup() {
-        const userStorage = userStore();
-        // userStorage.fetchUsers();
+        // const userStorage = userStore();
+        // userStorage.startIntervalUpdate();
         
-        userStorage.startIntervalUpdate();
 
-        
     },
     data() {
         return {
-            welcome: true as boolean,
+            maxSpeed: 1 as number
         };
     },
     watch: {},
     computed: {
         ...mapState(userStore, [
             'user',
+            'team',
+            'week',
+            'stats',
         ]),
     },
     methods: {
-        // ...mapActions(userStore, [
-        //     'setBalance',
-        // ])
+        ...mapActions(loaderStore, [
+            'stopLoader'
+        ]),
+        ...mapActions(authStore, [
+            'setNetwork',
+        ]),
+        async testSpeed(iterations: number) {
+  
+            const fileSize = 240 * 1024;
+
+            // Включаем счетчик времени
+            var start = performance.now() as any;
+
+            var url = import.meta.env.VITE_API_URL + '/checkConnectionSpeed'
+
+            console.log( import.meta.env.VITE_STORAGE_URL );
+
+
+            let speeds = [] as any;
+
+            for (let i = 0; i < iterations; i++) {
+                const start = performance.now();
+
+                await fetch(url).then(async (response) => {
+                    console.log(response.blob())
+
+                    const end = performance.now();
+                    speeds.push(fileSize * 8 / (1024 * 1024 * (end - start) / 1000));
+                });
+                
+            }
+
+            return Number((speeds.reduce((sum: any, speed: any) => sum + speed, 0) / speeds.length).toFixed(2));
+        },
     },
-    mounted() {
-        // const piniaState = userStore(); // Получаем состояние Pinia из this.$pinia
-        // console.log(piniaState.fetchUsers());
-        
+    async mounted() {
+        this.stopLoader()
 
-        
+        var currentSpeed = await this.testSpeed(2)
 
-        // setInterval(() => {
-        //     piniaState.balance+=50
-        // }, 2000);
-
-        // this.$watch(() => piniaState,(state) => {
-        //         this.balance = state.balance
-        //     },
-        //     { deep: true }
-        // );
+        console.log(currentSpeed)
+        if (currentSpeed < this.maxSpeed) {
+            this.setNetwork(false)
+            router.push({path: '/network'})
+            console.log(currentSpeed)
+            console.log('Low network speed')
+        }
+        else{
+            this.setNetwork(true)
+        }
     },
 };
 </script>

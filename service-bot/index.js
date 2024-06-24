@@ -9,6 +9,13 @@ const bot = new TelegramBot(token, { polling: true });
 
 // Listen for any kind of message. There are different kinds of
 // messages.
+// bot.on('message', async (msg) => {
+//     const chatId = msg.chat.id;
+//     const text = msg.text;
+//     if (text === "/ss") {
+//         bot.sendMessage(chatId, bot.appWebViewResultUrl);
+//     }
+// });
 // bot.on("message", async (msg) => {
 //     const chatId = msg.chat.id;
 //     const text = msg.text;
